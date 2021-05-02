@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Main</title>
+</head>
+<style>
+    body {
+    margin:0 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color:white;
+    background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+    overflow: hidden;
+    }
+    
+    h1 {
+        font-size: 78px;
+    }
+    
+    div {
+        margin: 0 10vw;
+        display: flex;
+        font-size:100px;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    
+    span{
+        color:white;
+
+    }
+
+    form{
+        width:40vw;
+    }
+    input{
+        font-size:90px;
+        cursor: pointer;
+        outline: none;
+        heigth:200px;
+        width:160px;
+        margin:5px;
+        background:transparent;
+        border:none;
+        border-bottom: 2px solid white;
+    }
+
+    input:active{
+        background:transparent;
+    }
+
+    button{
+        background-color:yellow;
+        height:50px;
+        width:100px;
+        border-radius:10%;
+    }
+
+</style>
+
+<body>
+    <h1>How long do you have today !?</h1>
+    <div>
+    <form method='POST'>
+        <label for='hours'></label>
+        <input type='text' name='hours' id='hours'><span> hours</span>
+        <br>
+        <label for='minutes'></label>
+        <input type='text' name='minutes' id='minutes'><span> minutes</span>
+        <br>
+        <button type='submit' class='btn btn-success'>Confirm</button>
+    </form>
+</body>
+
+</html>

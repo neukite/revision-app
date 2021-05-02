@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Main</title>
+</head>
+<style>
+    h1 {
+        font-size: 78px;
+    }
+
+    body {
+    display: flex;
+    margin:0 5vw;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color:white;
+    background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+    overflow: hidden;
+    }
+</style>
+
+<body>
+    <h1 style='width:70vw;'>The subject of today is... <span style='font-size:92px; color:yellow;'>{{subject}}</span></h1>
+    <h1 id='demo'></h1>
+    <div>
+        <a href="/revision"><button type="button" class="btn btn-success">Next subject</button></a>
+        <button id='stutus' type="button" class="btn btn-primary" onclick='changeStutus()'>Take a rest!</button>
+    </div>
+    <p id='hours' style='display:none;'>{{hour}}</p>
+    <p id='minutes' style='display:none;'>{{minute}}</p>
+</body>
+
+
+<script>
+const hour=document.getElementById('hours').innerHTML
+const minute=document.getElementById('minutes').innerHTML
+var distance = (hour*3600+minute*60)*1000;
+var revising=true
+
+//Stop and start the stopwatch
+function changeStutus(){
+    if(revising===true){
+        revising=false
+        document.getElementById('stutus').innerHTML='continue';
+    }else{
+        revising=true
+        document.getElementById('stutus').innerHTML='Take a rest';
+    }
+}
+
+//Timer
+var x = setInterval(function() {
+  if(revising==true)
+    {distance-=1000
+    }
+  // Time calculations for days, hours, minutes and seconds
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("demo").innerHTML =  hours + "h "
+  + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  };
+}, 1000);
+</script>
+</html>
