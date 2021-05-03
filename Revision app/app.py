@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from random import randint
 import sqlite3
 app=Flask(__name__)
 
-subject_list=['English','Chinese','Math','LS','M1/M2','X1','X2','X3']
+subject_list=['English','Chinese','Math','LS','M1-M2','X1','X2','X3']
+
+def get_index(subject):
+    return int(subject_list.index(subject)+1)
 
 @app.route('/')
 def hello():
@@ -28,7 +31,7 @@ def draw_subject():
         if len(data_list) ==0:
             data_list = subject_list 
             for subject in subject_list:
-                cur.execute('INSERT INTO revision(subject, id) VALUES (?,?)' ,(subject,subject_list.index(subject)+1))
+                cur.execute('INSERT INTO revision(subject, id) VALUES (?,?)' ,(subject,get_index(subject)))
                 conn.commit()
         else:
             pass
@@ -40,21 +43,40 @@ def draw_subject():
             result= data_list[randint(0,len(data_list)-1)][0]
 
         #insert draw subject into test database
-        index=int(subject_list.index(result)+1)
-        print(index)
+        index=get_index(result)
 
         cur.execute('INSERT INTO test(subject, id) VALUES (?,?)' ,(result,index))
         conn.commit()
 
         #delete draw subject from the subject database
-        sql = 'DELETE FROM revision WHERE id=?'
-        conn= sqlite3.connect('revision.db')
-        cur = conn.cursor()
-        cur.execute(sql, (index,))
+        delete_statement = 'DELETE FROM revision WHERE id=?'
+        cur.execute(delete_statement, (index,))
         conn.commit()
-        return render_template('list.html', subject=result, minute=minutes, hour=hours)
+
+        note_statement='SELECT * from notes where id=?'
+        cur.execute(note_statement, (index,))
+        conn.commit()
+        for row in cur:
+            note=row[1]
+
+        return redirect(url_for('revising',subject=result, minute=minutes, hours=hours, note=note))
     else:
         return render_template('revision.html')
+
+
+@app.route('/revising/<subject>/<minute>/<hours>/<note>',methods=['POST','GET'])
+def revising(subject, minute, hours, note):
+    if request.method == 'POST':
+        new_note=request.form['new_note']
+        print(new_note)
+        conn= sqlite3.connect('revision.db')
+        cur = conn.cursor()
+        sql_update_query = "Update notes set notes = ? where id = ?"
+        cur.execute(sql_update_query, (new_note, get_index(subject)))
+        conn.commit()
+        return redirect('/revision')
+    else:
+        return render_template('list.html', subject=subject, minute=minute, hour=hours, notes=note)
 
 
 @app.route('/test',methods=['POST','GET'])
@@ -66,11 +88,13 @@ def test():
         sql = 'DELETE FROM test WHERE id=?'
         finished=finished.split(',')
         print(finished)
-        if type(finished) ==list:
-            for i in finished:
+        for i in finished:
+            try:
                 index=int(subject_list.index(i)+1)
                 cur.execute(sql, (index,))
-            conn.commit()
+            except:
+                ValueError()
+        conn.commit()
         return redirect('/')
     else:
         conn = sqlite3.connect('revision.db')

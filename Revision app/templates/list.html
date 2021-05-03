@@ -16,26 +16,55 @@
     }
 
     body {
-    display: flex;
-    margin:0 5vw;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color:white;
-    background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
-    overflow: hidden;
+        display: flex;
+        flex-wrap:wrap
+        margin:0 5vw;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color:white;
+        background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+        overflow: hidden;
+    }
+
+    .info{
+        width:70%;
+        margin-top:-5vh;
+    }
+
+    #notes{
+        height:500px;
+        width:30vw;
+        font-size:18px;
+        margin-right:5vw;
+        background:white;
+        color:black;
+        border: none;
+        resize: none;
+    }
+
+    #notes:active{
+        border: none;
+        resize: none;
     }
 </style>
 
 <body>
-    <h1 style='width:70vw;'>The subject of today is... <span style='font-size:92px; color:yellow;'>{{subject}}</span></h1>
-    <h1 id='demo'></h1>
-    <div>
-        <a href="/revision"><button type="button" class="btn btn-success">Next subject</button></a>
-        <button id='stutus' type="button" class="btn btn-primary" onclick='changeStutus()'>Take a rest!</button>
+    <div class='info'>
+        <h1>The subject of today is... <span style='font-size:92px; color:yellow;'>{{subject}}</span></h1>
+        <h1 id='demo'></h1>
+        <div>
+            <button type="button" class="btn btn-success" onclick='save()'>Next subject</button>
+            <button id='stutus' type="button" class="btn btn-primary" onclick='changeStutus()'>Take a rest!</button>
+        </div>
+        <p id='hours' style='display:none;'>{{hour}}</p>
+        <p id='minutes' style='display:none;'>{{minute}}</p>
     </div>
-    <p id='hours' style='display:none;'>{{hour}}</p>
-    <p id='minutes' style='display:none;'>{{minute}}</p>
+
+    <form method='POST' >
+        <textarea id='notes' name='new_note'>{{notes}}</textarea>
+        <button id='save' type='submit' style='display:none;'></button>
+    </form>
 </body>
 
 
@@ -58,23 +87,35 @@ function changeStutus(){
 
 //Timer
 var x = setInterval(function() {
-  if(revising==true)
+if(revising==true)
     {distance-=1000
     }
-  // Time calculations for days, hours, minutes and seconds
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+// Time calculations for days, hours, minutes and seconds
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  // Display the result in the element with id="demo"
-  document.getElementById("demo").innerHTML =  hours + "h "
-  + minutes + "m " + seconds + "s ";
+// Display the result
+if (hours!==0){
+    document.getElementById("demo").innerHTML =  hours + "h "
+    + minutes + "m " + seconds + "s ";
+}else{
+    document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
+}
 
-  // If the count down is finished, write some text
-  if (distance < 0) {
+// If the count down is finished, write some text
+if (distance < 0) {
     clearInterval(x);
     document.getElementById("demo").innerHTML = "EXPIRED";
-  };
+};
 }, 1000);
+
+
+//auto-save notes
+
+function save() {
+    document.getElementById('save').click();
+};
+
 </script>
 </html>
